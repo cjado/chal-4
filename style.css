@@ -34,4 +34,9 @@ body {
 .hide {
     display: none;
 } 
-
+body.wrong {
+    background-color: crimson;
+}
+body.correct {
+    background-color: green;
+}
