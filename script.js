@@ -164,6 +164,7 @@ function restartLocalStorage () {
     nameInput.classList.add('hide')
     highScoreList.classList.add('hide')
     localStorage.clear()
+    questionsCorrect = 0;
     startGame()
 }
 
