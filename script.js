@@ -58,8 +58,10 @@ saveButton.addEventListener("click", () => {
     // localStorage.setItem("name", name);
     // localStorage.setItem("score", score);
     nameInput.value = "";
-    showHighScores();
-    highScoreList.classList.remove('hide')
+    if (highScores.length > 0) {
+        showHighScores();
+        highScoreList.classList.remove('hide')
+      }
   });
 
 quizTime()
