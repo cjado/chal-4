@@ -34,15 +34,16 @@ const restartButton = document.getElementById('restart-button')
 const highScoreList = document.getElementById("high-score-list");
 const saveButton = document.getElementById("save-button");
 const nameInput = document.getElementById("name-input");
-
 let shuffledQuestions, currentQuestionIndex
 let timerInterval;
 var timeLeft = 30;
+let questionsCorrect = 0;
 
 
 highScoreList.addEventListener("click", showHighScores)
 startButton.addEventListener("click", startGame)
-restartButton.addEventListener("click", restartLocalStorage)
+restartButton.addEventListener("click", restartLocalStorage, () => {
+questionsCorrect = 0;})
 nextButton.addEventListener("click", () => {
     currentQuestionIndex++
     setNextQuestion()
@@ -55,8 +56,6 @@ saveButton.addEventListener("click", () => {
     const score = questionsCorrect;
     const highScore = { name: name, score: score };
     highScores.push(highScore);
-    // localStorage.setItem("name", name);
-    // localStorage.setItem("score", score);
     nameInput.value = "";
     if (highScores.length > 0) {
         showHighScores();
@@ -78,12 +77,12 @@ function quizTime() {
         quizTime()};},1000);
 };
 
-let questionsCorrect = 0;
 function startGame() {
-        const storedQuestionsCorrect = localStorage.getItem('questionsCorrect');
-        if (storedQuestionsCorrect) {
-        questionsCorrect = parseInt(storedQuestionsCorrect);
-        }
+        // const storedQuestionsCorrect = localStorage.getItem('questionsCorrect');
+        // if (storedQuestionsCorrect) {
+        // questionsCorrect = parseInt(storedQuestionsCorrect);
+        // }
+    questionsCorrect = 0;
     console.log('started')
     console.log('timer started')
     startButton.classList.add('hide')
@@ -164,7 +163,6 @@ function restartLocalStorage () {
     nameInput.classList.add('hide')
     highScoreList.classList.add('hide')
     localStorage.clear()
-    questionsCorrect = 0;
     startGame()
 }
 
@@ -172,12 +170,9 @@ function restartLocalStorage () {
 
 function showHighScores() {
   highScoreList.innerHTML = "";
+  highScores.sort((a, b) => b.score - a.score); // Sort the high scores in descending order by score
   highScores.forEach((highScore) => {
     const li = document.createElement("li");
     li.textContent = `${highScore.name}: ${highScore.score}`;
-//   const name = localStorage.getItem("name");
-//   const score = localStorage.getItem("score");
-//   const item = document.createElement("li");
-//   item.innerHTML = `${name}: ${score}`;
-  highScoreList.appendChild(li);
+    highScoreList.appendChild(li);
 });}
