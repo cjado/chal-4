@@ -78,10 +78,6 @@ function quizTime() {
 };
 
 function startGame() {
-        // const storedQuestionsCorrect = localStorage.getItem('questionsCorrect');
-        // if (storedQuestionsCorrect) {
-        // questionsCorrect = parseInt(storedQuestionsCorrect);
-        // }
     questionsCorrect = 0;
     console.log('started')
     console.log('timer started')
@@ -91,6 +87,7 @@ function startGame() {
     questionContainer.classList.remove('hide')
     countDown.classList.remove('hide')
     setNextQuestion()
+    showQuestion()
 
 }
 
