@@ -31,40 +31,45 @@ const answerButtonsElement = document.getElementById('answer-buttons')
 const defaultBtn = document.getElementById('btn')
 const countDown = document.getElementById('countdown')
 const highScores = document.getElementById('highscores')
+const restartButton = document.getElementById('restart-button')
 
 let shuffledQuestions, currentQuestionIndex
-var timeLeft = 1000;
+let timerInterval;
+var timeLeft = 30;
+// let questionsCorrect = 0;
+// const storedQuestionsCorrect = localStorage.getItem('questionsCorrect');
+// if (storedQuestionsCorrect) {
+//     questionsCorrect = parseInt(storedQuestionsCorrect);
+//   }
 
 startButton.addEventListener("click", startGame)
+restartButton.addEventListener("click", restartLocalStorage)
 nextButton.addEventListener("click", () => {
     currentQuestionIndex++
     setNextQuestion()
-},
-)
+},)
 
+quizTime()
 function quizTime() {
   var timerInterval = setInterval(function () {
     if(timeLeft > 0) {
         timeLeft--;
         countdown.textContent = "Time left: " + timeLeft ;
-    }
-    else {
+    } else {
         console.log('time had ended')
-        timeLeft = 0;
-        countDown.textContent = "You have ran out of time! Please restart the game or check the highscores tos see where you rank.";
-        startButton.textContent = 'Restart'
-        answerButtonsElement.classList.add('hide')
-        questionElement.classList.add('hide')
-        startButton.classList.remove('hide')
-
-    };
-        }, 1000);
+        timeLeft = 30;
+        clearInterval(timerInterval);
+        setNextQuestion()
+        quizTime()};},1000);
 };
 
-
+let questionsCorrect = 0;
 function startGame() {
+        const storedQuestionsCorrect = localStorage.getItem('questionsCorrect');
+        if (storedQuestionsCorrect) {
+        questionsCorrect = parseInt(storedQuestionsCorrect);
+        }
     console.log('started')
-    quizTime()
     console.log('timer started')
     startButton.classList.add('hide')
     shuffledQuestions = questions.sort(() => Math.random() - .5)
@@ -76,15 +81,18 @@ function startGame() {
 }
 
 function setNextQuestion() {
+    checkedForQuestionsLeft()
     console.log('setNextQuestion set')
     resetDefault()
     showQuestion(shuffledQuestions[currentQuestionIndex])
+    timeLeft = 30
 }
 
 
 
 function showQuestion(question){
     console.log('question shown')
+    answerButtonsElement.classList.remove('hide')
     questionElement.innerText = question.question
     question.answers.forEach(answer => {
         const button = document.createElement('button')
@@ -98,29 +106,34 @@ function showQuestion(question){
         button.addEventListener("click", selectedAnswer)
         answerButtonsElement.appendChild(button)
         highScores.classList.add('hide')
+        restartButton.classList.add('hide')
     } ) 
 }
-
-let questionsCorrect = 0;
-localStorage.setItem('questionsCorrect', questionsCorrect.toString())
 
 function selectedAnswer(event) {
     const button = event.target;
     const dataCorrect = button.dataset.correct;
     if (dataCorrect === "true") {
       console.log("The answer selected is correct!");
+      questionsCorrect++;
+      localStorage.setItem('questionsCorrect', questionsCorrect.toString())
     } else {
       console.log("The answer selected is incorrect.");
     }
+    clearInterval(timerInterval)
+    checkedForQuestionsLeft()
+    answerButtonsElement.classList.add('hide')
+}
+
+function checkedForQuestionsLeft () {
     if (shuffledQuestions.length > currentQuestionIndex + 1) {
         nextButton.classList.remove('hide')
         console.log('checked # of questions left')
     } else {
-        startButton.textContent = "Restart"
-        startButton.classList.remove('hide')
         highScores.classList.remove('hide')
         console.log('no questions left, restart button avbl')
-    
+        console.log(questionsCorrect)
+        restartButton.classList.remove('hide')
 }}
 
 function resetDefault () {
@@ -128,3 +141,10 @@ function resetDefault () {
        while (answerButtonsElement.firstChild) {
        answerButtonsElement.removeChild(answerButtonsElement.firstChild)
 }}
+
+function restartLocalStorage () {
+    localStorage.clear()
+    startGame()
+}
+
+
