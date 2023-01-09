@@ -30,24 +30,37 @@ const questionElement = document.getElementById('question')
 const answerButtonsElement = document.getElementById('answer-buttons')
 const defaultBtn = document.getElementById('btn')
 const countDown = document.getElementById('countdown')
-const highScores = document.getElementById('highscores')
 const restartButton = document.getElementById('restart-button')
+const highScoreList = document.getElementById("high-score-list");
+const saveButton = document.getElementById("save-button");
+const nameInput = document.getElementById("name-input");
 
 let shuffledQuestions, currentQuestionIndex
 let timerInterval;
 var timeLeft = 30;
-// let questionsCorrect = 0;
-// const storedQuestionsCorrect = localStorage.getItem('questionsCorrect');
-// if (storedQuestionsCorrect) {
-//     questionsCorrect = parseInt(storedQuestionsCorrect);
-//   }
 
+
+highScoreList.addEventListener("click", showHighScores)
 startButton.addEventListener("click", startGame)
 restartButton.addEventListener("click", restartLocalStorage)
 nextButton.addEventListener("click", () => {
     currentQuestionIndex++
     setNextQuestion()
 },)
+
+const highScores = [];
+
+saveButton.addEventListener("click", () => {
+    const name = nameInput.value;
+    const score = questionsCorrect;
+    const highScore = { name: name, score: score };
+    highScores.push(highScore);
+    // localStorage.setItem("name", name);
+    // localStorage.setItem("score", score);
+    nameInput.value = "";
+    showHighScores();
+    highScoreList.classList.remove('hide')
+  });
 
 quizTime()
 function quizTime() {
@@ -105,7 +118,7 @@ function showQuestion(question){
         }
         button.addEventListener("click", selectedAnswer)
         answerButtonsElement.appendChild(button)
-        highScores.classList.add('hide')
+        highScoreList.classList.add('hide')
         restartButton.classList.add('hide')
     } ) 
 }
@@ -130,10 +143,12 @@ function checkedForQuestionsLeft () {
         nextButton.classList.remove('hide')
         console.log('checked # of questions left')
     } else {
-        highScores.classList.remove('hide')
+        highScoreList.classList.remove('hide')
         console.log('no questions left, restart button avbl')
         console.log(questionsCorrect)
         restartButton.classList.remove('hide')
+        saveButton.classList.remove('hide')
+        nameInput.classList.remove('hide')
 }}
 
 function resetDefault () {
@@ -143,8 +158,23 @@ function resetDefault () {
 }}
 
 function restartLocalStorage () {
+    saveButton.classList.add('hide')
+    nameInput.classList.add('hide')
+    highScoreList.classList.add('hide')
     localStorage.clear()
     startGame()
 }
 
 
+
+function showHighScores() {
+  highScoreList.innerHTML = "";
+  highScores.forEach((highScore) => {
+    const li = document.createElement("li");
+    li.textContent = `${highScore.name}: ${highScore.score}`;
+//   const name = localStorage.getItem("name");
+//   const score = localStorage.getItem("score");
+//   const item = document.createElement("li");
+//   item.innerHTML = `${name}: ${score}`;
+  highScoreList.appendChild(li);
+});}

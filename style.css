@@ -40,3 +40,10 @@ body.wrong {
 body.correct {
     background-color: green;
 }
+.highscorelist {
+    gap: 1.5rem;
+    display: flex;
+    align-items: center;
+    text-align: center;
+
+}
