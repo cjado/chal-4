@@ -23,9 +23,6 @@ const questions = [
         ]}
 ];
 
-const correct = questions.correct
-
-
 const startButton = document.getElementById('start-button')
 const questionContainer = document.getElementById('question-container')
 const nextButton = document.getElementById('next-button')
@@ -35,11 +32,8 @@ const defaultBtn = document.getElementById('btn')
 const countDown = document.getElementById('countdown')
 const highScores = document.getElementById('highscores')
 
-let answerCorrect = 1
-let answerIncorrect = 0
-let totalCorrectQuestions = 0 
 let shuffledQuestions, currentQuestionIndex
-var timeLeft = 10;
+var timeLeft = 1000;
 
 startButton.addEventListener("click", startGame)
 nextButton.addEventListener("click", () => {
@@ -70,6 +64,8 @@ function quizTime() {
 
 function startGame() {
     console.log('started')
+    quizTime()
+    console.log('timer started')
     startButton.classList.add('hide')
     shuffledQuestions = questions.sort(() => Math.random() - .5)
     currentQuestionIndex = 0
@@ -96,6 +92,8 @@ function showQuestion(question){
         button.classList.add('btn')
         if (answer.correct) {
             button.dataset.correct = answer.correct
+        } else {
+            button.dataset.correct = answer.correct
         }
         button.addEventListener("click", selectedAnswer)
         answerButtonsElement.appendChild(button)
@@ -103,48 +101,30 @@ function showQuestion(question){
     } ) 
 }
 
-function selectedAnswer(e) {
-    console.log('answer selected')
-    const selectedButton = e.target
-    const correct = selectedButton.dataset.correct
-    if (selectedButton.correct = true) {
-        localStorage.setItem("Correct", 1)
-        console.log(correct)
+let questionsCorrect = 0;
+localStorage.setItem('questionsCorrect', questionsCorrect.toString())
+
+function selectedAnswer(event) {
+    const button = event.target;
+    const dataCorrect = button.dataset.correct;
+    if (dataCorrect === "true") {
+      console.log("The answer selected is correct!");
     } else {
-        console.log(correct)
+      console.log("The answer selected is incorrect.");
     }
-    setStatusClass(document.body, correct)
-    Array.from(answerButtonsElement.children).forEach(button => {
-        setStatusClass(button, button.dataset.correct)
-    })
     if (shuffledQuestions.length > currentQuestionIndex + 1) {
         nextButton.classList.remove('hide')
+        console.log('checked # of questions left')
     } else {
         startButton.textContent = "Restart"
         startButton.classList.remove('hide')
         highScores.classList.remove('hide')
-        console.log('no questions left')
-    }
-}
-
-function setStatusClass(element, correct) {
-    clearStatusClass(element)
-    if (correct) {
-    }
-    else {
-        element.classList.add('wrong')
-    }
-
-}
-
-function clearStatusClass(element, correct) {
-    element.classList.remove('correct')
-    element.classList.remove('wrong')
-};
+        console.log('no questions left, restart button avbl')
+    
+}}
 
 function resetDefault () {
    nextButton.classList.add('hide')
        while (answerButtonsElement.firstChild) {
        answerButtonsElement.removeChild(answerButtonsElement.firstChild)
-   }
-}
+}}
